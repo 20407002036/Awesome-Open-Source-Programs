@@ -1,0 +1,51 @@
+name: Welcome for a Pull
+
+on: 
+issues:
+  types: [opened]
+  pull_request:
+  types: [opened]
+
+jobs:
+  welcome:
+    run-on: ubuntu-latest
+    steps:
+        - name: Welcome Issue
+          if: github.event_name == 'issues'
+          uses: actions/github-script@v5
+          with:
+              script:
+                const issue = context.issue;
+                const repo = context.repo;
+                const issueAuthor = context.playload.sender.login;
+
+                const welcomeMessage = '
+                  Hi @${issueAuthor}! :wave:
+
+                  Thanks for creating issue with our repo
+                  ';
+                  github.rest.issues.createComment({
+                  ...repo,
+                  issue_number: issue.number,
+                  body: welcomeMessage
+                  });
+             - name: Welcome Pull request
+          if: github.event_name == 'pull_request_target'
+          uses: actions/github-script@v5
+          with:
+              script:
+                const pr = context.issue;
+                const repo = context.repo;
+                const issueAuthor = context.playload.sender.login;
+
+                const welcomeMessage = '
+                  Hi @${issueAuthor}! :wave:
+
+                  Thanks for creating a Pull Request. We appreciate your contribution.
+                  ';
+                  github.rest.issues.createComment({
+                  ...repo,
+                  issue_number: issue.number,
+                  body: welcomeMessage
+                  });
+
